@@ -7,6 +7,9 @@
 :: If Java is installed, upgrade, and remove old versions
 :: Works with x64 and x86 installations
 
+
+:: Disable UAC before Running!!!
+
 @ECHO OFF
 :: If Java is not detected, quit this whole operation, go to EOF
 wmic product where "Name like '%%Java%%'" LIST BRIEF | findstr Java
