@@ -30,17 +30,26 @@ set latestJava=Java 8 Update 201
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
    ECHO Detected latest Java...
+   ECHO Removing OLD Java...
+   ECHO Uninstall 8...
+   ECHO Uninstall 7...
+   ECHO Uninstall 6...
    GOTO :eof
 )
 Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
    ECHO Detected latest Java 2...
+   ECHO Removing OLD Java...
+   ECHO Uninstall 8...
+   ECHO Uninstall 7...
+   ECHO Uninstall 6...
    GOTO :eof
 )
 
 ::
-:: Find any old JRE's
+:: JRE CHECKS
 ::
+
 :: Java 8 Family Check
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
 IF not errorlevel 1 (
@@ -76,11 +85,14 @@ IF not errorlevel 1 (
 )
 
 ::
-:: If old JRE detected, install new, verify new install, then remove old
+:: JRE ACTION
 ::
+
+:: If old JRE detected, install new
 IF "%updateFlag%"=="Yes" (
    ECHO Installing new Java...
 )
+:: Verify new installation
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
    ECHO Installation of new Java complete...
@@ -91,15 +103,14 @@ IF not errorlevel 1 (
    ECHO Installation of new Java complete...
    SET removeOld=Yes
 )
+:: Remove old if new version successfully installed
 IF "%removeOld%"=="Yes" (
    ECHO Removing OLD Java...
    ECHO Uninstall 8...
    ECHO Uninstall 7...
    ECHO Uninstall 6...
-   GOTO :eof
 ) else (
    ECHO FAILED REMEDIATION
 )
 
- 
 :eof
