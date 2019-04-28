@@ -32,18 +32,18 @@ Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 IF not errorlevel 1 (
    ECHO Detected latest Java...
    ECHO Removing OLD Java...
-   ECHO Uninstall 8...
-   ECHO Uninstall 7...
-   ECHO Uninstall 6...
+   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
    GOTO :eof
 )
 Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
    ECHO Detected latest Java 2...
    ECHO Removing OLD Java...
-   ECHO Uninstall 8...
-   ECHO Uninstall 7...
-   ECHO Uninstall 6...
+   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
    GOTO :eof
 )
 
@@ -89,9 +89,10 @@ IF not errorlevel 1 (
 :: JRE ACTION
 ::
 
-:: If old JRE detected, install new
+:: If old JRE detected, install new - CHANGE PATH FOR ***INSTALLATION***
 IF "%updateFlag%"=="Yes" (
    ECHO Installing new Java...
+   E:\Downloads\Java\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
 )
 :: Verify new installation
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
@@ -101,17 +102,18 @@ IF not errorlevel 1 (
 )
 Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
-   ECHO Installation of new Java complete...
+   ECHO Installation of new Java complete 2...
    SET removeOld=Yes
 )
 :: Remove old if new version successfully installed
 IF "%removeOld%"=="Yes" (
-   ECHO Removing OLD Java...
-   ECHO Uninstall 8...
-   ECHO Uninstall 7...
-   ECHO Uninstall 6...
+   ECHO Removing OLD Java 3...
+   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
+   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
 ) else (
    ECHO FAILED installation or JDK
+   :: Might be able to use GO TO here to loop back to JRE checks
 )
 
 :eof
