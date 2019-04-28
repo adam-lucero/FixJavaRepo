@@ -23,10 +23,11 @@ IF "%complete%"=="Yes" (
 )
 
 
-:: Check for the latest version and if found, remove old versions and EOF
-:: Edit variable for latest version
+:: If the latest version is found, remove old JRE and exit script
+::
+:: Edit this variable for latest version - It's used elsewhere.
 set latestJava=Java 8 Update 201
-
+::
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF not errorlevel 1 (
    ECHO Detected latest Java...
@@ -110,7 +111,7 @@ IF "%removeOld%"=="Yes" (
    ECHO Uninstall 7...
    ECHO Uninstall 6...
 ) else (
-   ECHO FAILED REMEDIATION
+   ECHO FAILED installation or JDK
 )
 
 :eof
