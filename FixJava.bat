@@ -1,3 +1,11 @@
+:: Author - Adam Lucero
+:: 04/2019
+
+:: Java Remediation Tool
+:: If Java is not installed, don't do anything
+:: If Java is installed, upgrade, and remove old versions
+:: Disable UAC before Running!!!
+
 @ECHO OFF
 
 :: If Java is not installed skip the entire script
