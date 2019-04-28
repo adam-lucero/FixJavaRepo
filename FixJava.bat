@@ -1,4 +1,5 @@
 @ECHO OFF
+
 :: If Java is not installed skip the entire script
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
 IF not errorlevel 1 (
