@@ -7,14 +7,14 @@
 @ECHO OFF
 
 
+::
+:: VERIFY JAVA
+::
+
 :: Edit this variable to latest version - It's used elsewhere
 :: Standard format = Java X Update X
 set latestJava=Java 8 Update 201
 
-
-::
-:: VERIFY JAVA
-::
 
 :: Program Files
 DIR "C:\Program Files\Java" | FIND "jre"
@@ -41,7 +41,6 @@ IF '%ERRORLEVEL%'=='0' (
     SET complete=No
     SET jdkFiles=Yes
 )
-
 :: Registry
 :: New version
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
@@ -56,7 +55,6 @@ IF '%ERRORLEVEL%'=='0' (
    SET completex=No
    SET newJRE=Yes
 )
-
 :: Java 8 Family
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
 IF '%ERRORLEVEL%'=='0' (
@@ -153,7 +151,6 @@ IF '%ERRORLEVEL%'=='0' (
 :: TAKE ACTION
 ::
 
-
 :: End script if Java wasn't found
 IF "%complete%"=="No" (
    IF "%completex%"=="No" (
@@ -188,7 +185,7 @@ IF '%ERRORLEVEL%'=='0' (
    ECHO SUCCESSFUL INSTALLATION 2 ---
    SET JREremediation=Yes
 )
-:: JRE ACTION
+:: JRE Remediation
 :jreRemediation 
 IF "%JREremediation%"=="Yes" (
    IF "%jreEightFam%"=="Yes" (
@@ -209,7 +206,7 @@ IF "%upgradeJDK%"=="Yes" (
    ECHO Upgrading old JDK ---
    SET JDKremediation=Yes
 )
-:: JDK ACTION
+:: JDK Remediation
 IF "%JDKremediation%"=="Yes" (
    IF "%jdkEightFam%"=="Yes" (
       ECHO removing JDK 8 Family ---
