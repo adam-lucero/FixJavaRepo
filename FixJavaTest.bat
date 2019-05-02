@@ -1,8 +1,8 @@
 :: Author - Adam Lucero
 :: 04/2019
 :: Java Remediation Tool
-:: If Java is not installed, don't do anything
-:: If Java is installed, upgrade, and remove old versions
+:: Only works if Windows registry and Program Files have Java data
+:: Supports JRE 8,7,6
 :: Disable UAC before Running!
 @ECHO OFF
 
