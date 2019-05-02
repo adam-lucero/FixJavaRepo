@@ -1,20 +1,25 @@
+@ECHO OFF
 :: Author - Adam Lucero
 :: 04/2019
 :: Java Remediation Tool
-:: Only works if Windows registry and Program Files have Java data
-:: Supports JRE 8,7,6
+
+
+:: Important Info:
+:: Finds Java in both Registry and Program Files
+:: IF Java is found, upgrade and/or remove old versions
+:: Supports Java JRE 8,7,6
 :: Disable UAC before Running!
-@ECHO OFF
 
 
-::
-:: VERIFY JAVA
-::
 
-:: Edit this variable to latest version - It's used elsewhere
-:: Standard format = Java X Update X
+:: EDIT variable to the latest JRE version - variable used elsewhere!!!
+:: Format = "Java X Update X"
 set latestJava=Java 8 Update 201
 
+
+::
+:: FIND JAVA INSTALLATIONS
+::
 
 :: Program Files
 DIR "C:\Program Files\Java" | FIND "jre"
@@ -42,7 +47,6 @@ IF '%ERRORLEVEL%'=='0' (
     SET jdkFiles=Yes
 )
 :: Registry
-:: New version
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
 IF '%ERRORLEVEL%'=='0' (
    ECHO Detected New Java ---
@@ -151,16 +155,16 @@ IF '%ERRORLEVEL%'=='0' (
 :: TAKE ACTION
 ::
 
-:: End script if Java wasn't found
+:: If Java wasn't found in Program files AND Registry, END
 IF "%complete%"=="No" (
    IF "%completex%"=="No" (
       ECHO VERIFIED JAVA ---
    )
 ) ELSE (
-   ECHO ENDING SCRIPT ---
+   ECHO NO JAVA FOUND ENDING SCRIPT ---
    GOTO :eof
 )
-:: If new Java found, remove old
+:: If the newest JRE was found, remove old JRE
 IF "%jreFiles%"=="Yes" (
    IF "%newJRE%"=="Yes" (
       ECHO Newest Java found ---
@@ -168,7 +172,7 @@ IF "%jreFiles%"=="Yes" (
       GOTO :jreRemediation     
    )    
 )
-:: If only old JRE, upgrade JRE
+:: If only old JRE was found, upgrade JRE
 IF "%jreFiles%"=="Yes" (
    IF "%upgradeJRE%"=="Yes" (
       ECHO Upgrading old JRE ---    
@@ -190,12 +194,15 @@ IF '%ERRORLEVEL%'=='0' (
 IF "%JREremediation%"=="Yes" (
    IF "%jreEightFam%"=="Yes" (
       ECHO removing JRE 8 Family ---
+      wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
    )
    IF "%jreSevenFam%"=="Yes" (
       ECHO removing JRE 7 Family ---
+      wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
    )
    IF "%jreSixFam%"=="Yes" (
       ECHO removing JRE 6 Family ---
+      wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
    )     
 )
 
