@@ -9,20 +9,40 @@
 @ECHO OFF
 
 :: If Java is not installed skip the entire script
+DIR "C:\Program Files\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO File Path JRE---
+    SET complete=No
+)
+DIR "C:\Program Files (x86)\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO File Path JRE 2---
+    SET complete=No
+)
+DIR "C:\Program Files\Java" | FIND "jdk"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO File Path JDK---
+    SET complete=No
+)
+DIR "C:\Program Files (x86)\Java" | FIND "jdk"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO File Path JDK 2---
+    SET complete=No
+)
+
+
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
-IF not errorlevel 1 (
+IF '%ERRORLEVEL%'=='0' (
    ECHO PASS - JAVA CHECK ---
-   SET complete=No
-) else (
-   SET complete=Yes
+   SET completex=No
 )
 Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
-IF not errorlevel 1 (
+IF '%ERRORLEVEL%'=='0' (
    ECHO PASS - JAVA CHECK 2 ---
    SET completex=No
-) else (
-   SET completex=Yes
-)
+) 
+
+
 IF "%complete%"=="Yes" (
    IF "%completex%"=="Yes" (
       ECHO FAILED TO FIND JAVA ---
