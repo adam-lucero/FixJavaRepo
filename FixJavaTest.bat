@@ -136,9 +136,8 @@ IF '%ERRORLEVEL%'=='0' (
 
 
 ::
-:: TAKE ACTION
+:: TAKE ACTION IF
 ::
-
 
 :: If the newest JRE was found, remove old JRE
 IF "%jreFiles%"=="Yes" (
