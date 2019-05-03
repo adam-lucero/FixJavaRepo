@@ -12,7 +12,7 @@
 
 
 
-:: EDIT variable to the latest JRE version - variable used elsewhere!!!
+:: EDIT this variable to the latest JRE version!!!
 :: Format = "Java X Update X"
 set latestJava=Java 8 Update 201
 
@@ -22,7 +22,6 @@ set latestJava=Java 8 Update 201
 ::
 
 :verification
-
 :: Program Files
 DIR "C:\Program Files\Java" | FIND "jre"
 IF '%ERRORLEVEL%'=='0' (
@@ -178,16 +177,19 @@ IF "%jreFiles%"=="Yes" (
 IF "%JREremediation%"=="Yes" (
    IF "%jreEightFam%"=="Yes" (
       ECHO removing JRE 8 Family ---
+      wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
    )
    IF "%jreSevenFam%"=="Yes" (
       ECHO removing JRE 7 Family ---
+      wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
    )
    IF "%jreSixFam%"=="Yes" (
       ECHO removing JRE 6 Family ---
+      wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
    )     
 )
 
-:: In progress
+:: In progress...
 :: If only old JDK, upgrade JDK
 :: Verify upgrade TBD
 IF "%upgradeJDK%"=="Yes" (
