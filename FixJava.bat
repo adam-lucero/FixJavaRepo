@@ -1,124 +1,211 @@
+@ECHO OFF
 :: Author - Adam Lucero
 :: 04/2019
-
 :: Java Remediation Tool
-:: If Java is not installed, don't do anything
-:: If Java is installed, upgrade, and remove old versions
-:: Disable UAC before Running!!!
 
-@ECHO OFF
 
-:: If Java is not installed skip the entire script
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
-IF not errorlevel 1 (
-   ECHO PASS - JAVA CHECK ---
-   SET complete=No
-) else (
-   SET complete=Yes
+:: Important Info:
+:: Finds Java in both Registry and Program Files
+:: IF Java is found, upgrade and/or remove old versions
+:: Supports Java JRE 8,7,6
+:: Disable UAC before Running!
+
+
+
+:: EDIT this variable to the latest JRE version!!!
+:: Format = "Java X Update X"
+set latestJava=Java 8 Update 201
+
+
+::
+:: FIND JAVA INSTALLATIONS
+::
+
+:verification
+:: Program Files
+DIR "C:\Program Files\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO Dedected JRE files ---
+    SET jreFiles=Yes
 )
-Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
-IF not errorlevel 1 (
-   ECHO PASS - JAVA CHECK 2 ---
-   SET completex=No
-) else (
-   SET completex=Yes
+DIR "C:\Program Files (x86)\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO Dedected JRE files 2 ---
+    SET jreFiles=Yes
 )
-IF "%complete%"=="Yes" (
-   IF "%completex%"=="Yes" (
-      ECHO FAILED TO FIND JAVA ---
-      GOTO :eof
+DIR "C:\Program Files\Java" | FIND "jdk"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO Dedected JDK files ---
+    SET jdkFiles=Yes
+)
+DIR "C:\Program Files (x86)\Java" | FIND "jdk"
+IF '%ERRORLEVEL%'=='0' (
+    ECHO Dedected JDK files 2 ---
+    SET jdkFiles=Yes
+)
+:: Registry
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected New Java ---
+   SET newJRE=Yes
+)
+Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected New Java 2 ---
+   SET newJRE=Yes
+)
+:: Java 8 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 8 Family ---
+   set jreEightFam=Yes
+   set upgradeJRE=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 8 Family 2 ---
+   set jreEightFam=Yes
+   set upgradeJRE=Yes
+)
+:: Java 7 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 7"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 7 Family ---
+   set jreSevenFam=Yes
+   set upgradeJRE=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 7"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 7 Family 2 ---
+   set jreSevenFam=Yes
+   set upgradeJRE=Yes
+)
+:: Java 6 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java(TM) 6"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 6 Family ---
+   set jreSixFam=Yes
+   set upgradeJRE=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java(TM) 6"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected Java 6 Family 2 ---
+   set jreSixFam=Yes
+   set upgradeJRE=Yes
+)
+:: JDK 8 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 8 Update 1"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 8 Family ---
+   set jdkEightFam=Yes
+   set upgradeJDK=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 8 Update 1"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 8 Family 2 ---
+   set jdkEightFam=Yes
+   set upgradeJDK=Yes
+)
+:: JDK 7 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 7"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 7 Family ---
+   set jdkSevenFam=Yes
+   set upgradeJDK=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 7"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 7 Family 2 ---
+   set jdkSevenFam=Yes
+   set upgradeJDK=Yes
+)
+:: JDK 6 Family
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 6"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 6 Family ---
+   set jdkSixFam=Yes
+   set upgradeJDK=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "SE Development Kit 6"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO Detected JDK 6 Family 2 ---
+   set jdkSixFam=Yes
+   set upgradeJDK=Yes
+)
+
+
+::
+:: TAKE ACTION IF
+::
+
+:: If the newest JRE was found, remove old JRE
+IF "%jreFiles%"=="Yes" (
+   IF "%newJRE%"=="Yes" (
+      IF "%upgradeVerify%"=="Yes" (
+         IF "%upgradeJRE%"=="Yes" (
+            ECHO Upgrade Success but old JRE found ---
+            SET JREremediation=Yes
+            GOTO :jreRemediation            
+         ) 
+         ECHO Upgrade SUCCESS ---
+         GOTO :eof
+      )
+      ECHO Newest Java found ---
+      SET JREremediation=Yes
+      GOTO :jreRemediation      
+   )    
+)
+
+:: If only old JRE was found, upgrade JRE
+IF "%jreFiles%"=="Yes" (
+   IF "%upgradeJRE%"=="Yes" (
+      IF "%upgradeVerify%"=="Yes" (
+         ECHO Upgrade FAILED ---
+         ECHO ENDING SCRIPT ---
+         GOTO :eof
+      ) 
+      ECHO Upgrading old JRE ---
+      E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
+      SET upgradeJRE=No
+      SET upgradeVerify=Yes
+      GOTO :verification
    )
 )
 
-
-:: If the latest version is found, remove old JRE and exit script
-::
-:: Edit this variable for latest version - It's used elsewhere.
-set latestJava=Java 8 Update 201
-::
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
-IF not errorlevel 1 (
-   ECHO PASS - NEW JAVA CHECK ---
-   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
-   GOTO :eof
-)
-Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
-IF not errorlevel 1 (
-   ECHO PASS - NEW JAVA CHECK 2 ---
-   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
-   GOTO :eof
+:: JRE Remediation
+:jreRemediation 
+IF "%JREremediation%"=="Yes" (
+   IF "%jreEightFam%"=="Yes" (
+      ECHO removing JRE 8 Family ---
+      wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
+   )
+   IF "%jreSevenFam%"=="Yes" (
+      ECHO removing JRE 7 Family ---
+      wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
+   )
+   IF "%jreSixFam%"=="Yes" (
+      ECHO removing JRE 6 Family ---
+      wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
+   )     
 )
 
-::
-:: JRE CHECKS
-::
-
-:: Java 8 Family Check
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
-IF not errorlevel 1 (
-   ECHO Detected Java 8 Family...
-   set updateFlag=Yes
+:: In progress...
+:: If only old JDK, upgrade JDK
+:: Verify upgrade TBD
+IF "%upgradeJDK%"=="Yes" (
+   ECHO Need to update old JDK ---
+   SET JDKremediation=Yes
 )
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 1"
-IF not errorlevel 1 (
-   ECHO Detected Java 8 Family 2...
-   set updateFlag=Yes
+:: JDK Remediation
+IF "%JDKremediation%"=="Yes" (
+   IF "%jdkEightFam%"=="Yes" (
+      ECHO JDK 8 Family ---
+   )
+   IF "%jdkSevenFam%"=="Yes" (
+      ECHO JDK 7 Family ---
+   )
+   IF "%jdkSixFam%"=="Yes" (
+      ECHO JDK 6 Family ---
+   )     
 )
-:: Java 7 Family Check
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 7"
-IF not errorlevel 1 (
-   ECHO Detected Java 7 Family...
-   set updateFlag=Yes
-)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 7"
-IF not errorlevel 1 (
-   ECHO Detected Java 7 Family 2...
-   set updateFlag=Yes
-)
-:: Java 6 Family Check
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java(TM) 6"
-IF not errorlevel 1 (
-   ECHO Detected Java 6 Family...
-   set updateFlag=Yes
-)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java(TM) 6"
-IF not errorlevel 1 (
-   ECHO Detected Java 6 Family 2...
-   set updateFlag=Yes
-)
-
-::
-:: JRE ACTION
-::
-
-:: If old JRE detected, install new - CHANGE PATH FOR ***INSTALLATION***
-IF "%updateFlag%"=="Yes" (
-   ECHO UPGRADING Java ---
-   E:\Downloads\Java\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
-)
-:: Verify new installation
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
-IF not errorlevel 1 (
-   ECHO SUCCESSFUL INSTALLATION ---
-   SET removeOld=Yes
-)
-Reg Query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "%latestJava%"
-IF not errorlevel 1 (
-   ECHO SUCCESSFUL INSTALLATION 2 ---
-   SET removeOld=Yes
-)
-:: Remove old if new version successfully installed
-IF "%removeOld%"=="Yes" (
-   ECHO UNINSTALLING OLD ---
-   wmic product where "Name like '%%Java(TM) 6%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
-   wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
-) else (
-   ECHO FAILED INSTALL or JDK ONLY
-)
-
 :eof
