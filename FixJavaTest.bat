@@ -191,19 +191,19 @@ IF "%JREremediation%"=="Yes" (
 :: If only old JDK, upgrade JDK
 :: Verify upgrade TBD
 IF "%upgradeJDK%"=="Yes" (
-   ECHO Upgrading old JDK ---
+   ECHO Need to update old JDK ---
    SET JDKremediation=Yes
 )
 :: JDK Remediation
 IF "%JDKremediation%"=="Yes" (
    IF "%jdkEightFam%"=="Yes" (
-      ECHO removing JDK 8 Family ---
+      ECHO JDK 8 Family ---
    )
    IF "%jdkSevenFam%"=="Yes" (
-      ECHO removing JDK 7 Family ---
+      ECHO JDK 7 Family ---
    )
    IF "%jdkSixFam%"=="Yes" (
-      ECHO removing JDK 6 Family ---
+      ECHO JDK 6 Family ---
    )     
 )
 :eof
