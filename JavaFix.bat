@@ -82,19 +82,6 @@ IF '%ERRORLEVEL%'=='0' (
    set jreEightNine=Yes
    set upgradeJRE=Yes
 )
-:: Java 8 Update 8x
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 8"
-IF '%ERRORLEVEL%'=='0' (
-   ECHO --- Found Java 8 Update 8x ---
-   set jreEightEight=Yes
-   set upgradeJRE=Yes
-)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 8"
-IF '%ERRORLEVEL%'=='0' (
-   ECHO --- Found Java 8 Update 8x x86 ---
-   set jreEightEight=Yes
-   set upgradeJRE=Yes
-)
 :: Java 8 Update 7x
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 7"
 IF '%ERRORLEVEL%'=='0' (
@@ -262,10 +249,6 @@ IF "%JREremediation%"=="Yes" (
    IF "%jreEightNine%"=="Yes" (
       ECHO --- Removing JRE 8 Update 9x ---
       wmic product where "Name like '%%Java 8 Update 9%%'" call uninstall /nointeractive
-   )
-   IF "%jreEightEight%"=="Yes" (
-      ECHO --- Removing JRE 8 Update 8x ---
-      wmic product where "Name like '%%Java 8 Update 8%%'" call uninstall /nointeractive
    )
    IF "%jreEightSeven%"=="Yes" (
       ECHO --- Removing JRE 8 Update 7x ---
