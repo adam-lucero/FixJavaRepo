@@ -213,9 +213,9 @@ IF '%ERRORLEVEL%'=='0' (
    set upgradeJDK=Yes
 )
 
-:::::::::::::
-:: ANALYZE ::
-:::::::::::::
+:::::::::::::::
+::  ANALYZE  ::
+:::::::::::::::
 
 :: If the newest JRE was found, remove old JRE
 :: If this was an upgrade loop, end, or remove old JRE
@@ -251,14 +251,14 @@ IF "%jreFiles%"=="Yes" (
    )
 )
 
-::::::::::::::::
-:: REMEDIATE  ::
-::::::::::::::::
+:::::::::::::::::
+::  REMEDIATE  ::
+:::::::::::::::::
 
 :jreRemediation 
 IF "%JREremediation%"=="Yes" (
    IF "%jreEightOne%"=="Yes" (
-      ECHO --- Removing JRE 8 Family ---
+      ECHO --- Removing JRE 8 Update 1x ---
       wmic product where "Name like '%%Java 8 Update 1%%'" call uninstall /nointeractive
    )
    IF "%jreEightNine%"=="Yes" (
@@ -300,9 +300,10 @@ IF "%JREremediation%"=="Yes" (
    RMDIR /S /Q "C:\Program Files (x86)\Java\jre6"
 )
 
-:: In progress...
-:: If only old JDK, upgrade JDK
-:: Verify upgrade TBD
+::::::::::::::::::::::::::
+::  JDK In progress...  ::
+::::::::::::::::::::::::::
+
 IF "%upgradeJDK%"=="Yes" (
    ECHO --- Need to update old JDK ---
    SET JDKremediation=Yes
