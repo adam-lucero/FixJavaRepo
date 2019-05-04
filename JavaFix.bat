@@ -1,26 +1,26 @@
 @ECHO OFF
-:: Author - Adam Lucero
-:: 04/2019
-:: Java Remediation Tool
-:: Supports Java JRE 8,7,6
-:: Disable UAC before Running!!!
-:: Command to disable UAC via Registry key
-:: reg add  "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::  Author - Adam Lucero
+::  04/2019
+::  Java Remediation Tool
+::  ONLY Supports Java JRE 8,7,6
+::  Disable UAC before Running!!!
+::  Command to disable UAC via Registry key
+::  reg add  "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::  What does the script do?
+::  1. If Java isn't found in both the Registry and Program Files, no changes will be made
+::  2. If the newest Java is found, it will remove all old versions
+::  3. If an old version is found, it will upgrade, and then remove old versions
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:: What does the script do?
-:: 1. Quits if Java isn't found in both the Registry and Program Files
-:: 2. If the newest Java is found, it will remove all old versions
-:: 3. If an old version is found, it will upgrade, and then remove old versions
+:::::::::::::::::
+::  FIND JAVA  ::
+:::::::::::::::::
 
-:: EDIT this variable to the latest JRE version!!!
-:: Format = "Java X Update X"
+::  EDIT this variable to the latest JRE version!!!
+::  Format = Java X Update X
 set latestJava=Java 8 Update 201
-
-
-
-::
-:: FIND JAVA INSTALLATIONS
-::
 
 :verification
 
@@ -134,6 +134,19 @@ IF '%ERRORLEVEL%'=='0' (
    set jreEightFour=Yes
    set upgradeJRE=Yes
 )
+:: Java 8 Update 3x
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 3"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO --- Found Java 8 Update 3x ---
+   set jreEightThree=Yes
+   set upgradeJRE=Yes
+)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 8 Update 3"
+IF '%ERRORLEVEL%'=='0' (
+   ECHO --- Found Java 8 Update 3x x86 ---
+   set jreEightThree=Yes
+   set upgradeJRE=Yes
+)
 :: Java 7 Family
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java 7"
 IF '%ERRORLEVEL%'=='0' (
@@ -200,12 +213,12 @@ IF '%ERRORLEVEL%'=='0' (
    set upgradeJDK=Yes
 )
 
-
-::
-:: TAKE ACTION IF
-::
+:::::::::::::
+:: ANALYZE ::
+:::::::::::::
 
 :: If the newest JRE was found, remove old JRE
+:: If this was an upgrade loop, end, or remove old JRE
 IF "%jreFiles%"=="Yes" (
    IF "%newJRE%"=="Yes" (
       IF "%upgradeVerify%"=="Yes" (
@@ -222,8 +235,7 @@ IF "%jreFiles%"=="Yes" (
       GOTO :jreRemediation      
    )    
 )
-
-:: If only old JRE was found, upgrade JRE
+:: If only old JRE was found, upgrade, and then loop back to the beginning
 IF "%jreFiles%"=="Yes" (
    IF "%upgradeJRE%"=="Yes" (
       IF "%upgradeVerify%"=="Yes" (
@@ -239,7 +251,10 @@ IF "%jreFiles%"=="Yes" (
    )
 )
 
-:: JRE Remediation
+::::::::::::::::
+:: REMEDIATE  ::
+::::::::::::::::
+
 :jreRemediation 
 IF "%JREremediation%"=="Yes" (
    IF "%jreEightOne%"=="Yes" (
@@ -265,7 +280,11 @@ IF "%JREremediation%"=="Yes" (
    IF "%jreEightFour%"=="Yes" (
       ECHO --- Removing JRE 8 Update 4x ---
       wmic product where "Name like '%%Java 8 Update 4%%'" call uninstall /nointeractive
-   )   
+   )
+   IF "%jreEightThree%"=="Yes" (
+      ECHO --- Removing JRE 8 Update 3x ---
+      wmic product where "Name like '%%Java 8 Update 3%%'" call uninstall /nointeractive
+   )      
    IF "%jreSevenFam%"=="Yes" (
       ECHO --- Removing JRE 7 Family ---
       wmic product where "Name like '%%Java 7%%'" call uninstall /nointeractive
