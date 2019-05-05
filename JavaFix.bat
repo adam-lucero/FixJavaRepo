@@ -14,6 +14,7 @@
 ::  3. If an old version is found, it will upgrade, and remove old versions
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+
 :::::::::::::::::
 ::  FIND JAVA  ::
 :::::::::::::::::
@@ -35,7 +36,6 @@ DIR "C:\Program Files\Java" | FIND "jdk"
 IF '%ERRORLEVEL%'=='0' (SET jdkFiles=Yes)
 DIR "C:\Program Files (x86)\Java" | FIND "jdk"
 IF '%ERRORLEVEL%'=='0' (SET jdkFiles=Yes)
-
 
 :: Registry
 ECHO --- Checking Registry ---
@@ -178,9 +178,13 @@ IF "%newJreFiles%"=="Yes" (
             ECHO --- Upgrade Success but old JRE found ---
             SET JREremediation=Yes
             GOTO :jreRemediation            
-         ) 
+         )
+         IF "%remediateJDK%"=="Yes" (
+            ECHO --- Upgrade Success but old JDK found ---
+            SET JREremediation=Yes
+            GOTO :jreRemediation            
+         )          
          ECHO --- Upgrade SUCCESS ---
-         GOTO :eof
       )
       ECHO --- Newest Java already installed, removing old ---
       SET JREremediation=Yes
