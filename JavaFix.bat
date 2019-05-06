@@ -1,7 +1,7 @@
 @ECHO OFF
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::  Author - Adam Lucero
-::  04/2019
+::  04/01/2019
 ::  Java Remediation Tool
 ::  ONLY Supports Java JRE 8,7,6
 ::  Disable UAC before Running!!!
