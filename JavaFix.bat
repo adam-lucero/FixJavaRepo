@@ -185,6 +185,7 @@ IF "%newJreFiles%"=="Yes" (
             GOTO :jreRemediation            
          )          
          ECHO --- Upgrade SUCCESS ---
+         GOTO :eof
       )
       ECHO --- Newest Java already installed, removing old ---
       SET JREremediation=Yes
