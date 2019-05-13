@@ -5,11 +5,11 @@ set x86GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVer
 for /f "tokens=2*" %%A in (
   'reg query "%x86GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
 ) do (
-  for /f "delims=" %%P in ('reg query "%x86GUID%" /s /f "%%B" 2^>nul ^| findstr "HKEY_LOCAL_MACHINE"') do (
-    for /f "tokens=2*" %%X in (
-      'reg query "%%P" /v "UninstallString" 2^>nul ^|findstr "UninstallString" ^|findstr "MsiExec.exe"'
+  for /f "delims=" %%I in ('reg query "%x86GUID%" /s /f "%%B" 2^>nul ^| findstr "HKEY_LOCAL_MACHINE"') do (
+    for /f "tokens=2*" %%M in (
+      'reg query "%%I" /v "UninstallString" 2^>nul ^|findstr "UninstallString" ^|findstr "MsiExec.exe"'
     ) do (
-      echo %%Y
+      echo %%N
     )
   )
 )
