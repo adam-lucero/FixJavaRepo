@@ -58,15 +58,14 @@ RMDIR /S /Q "C:\Program Files (x86)\Java\jre7"
 RMDIR /S /Q "C:\Program Files\Java\jre6"
 RMDIR /S /Q "C:\Program Files (x86)\Java\jre6"
 
-ECHO Installing AdoptOpenJDK
-msiexec /i E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jdk_x64_windows_hotspot_8u212b03.msi /quiet /norestart
-
-
 DIR "C:\Program Files\AdoptOpenJDK" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 DIR "C:\Program Files (x86)\AdoptOpenJDK" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 
+IF "%adoptjdkFiles%"=="Yes" (
+  GOTO :eof
+) ELSE (msiexec /i E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jdk_x64_windows_hotspot_8u212b03.msi /quiet /norestart)
 
 
 :eof
