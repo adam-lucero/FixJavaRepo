@@ -17,11 +17,12 @@ IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
 
 IF "%programFiles%"=="Yes" (
   IF "%regFiles%"=="Yes" (
-    GOTO :action
+    GOTO :cleanup
   )
 ) ELSE (GOTO :eof)
 
-:action
+:cleanup
+ECHO --- Removing commercial Java ---
 set x86GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
   'reg query "%x86GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
@@ -50,8 +51,15 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
-ECHO DELETE PROGRAM FILES HERE
-ECHO INSTALL AdoptOpenJDK HERE
+
+ECHO --- Removing Program Files ---
+RMDIR /S /Q "C:\Program Files\Java\jre7"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre7"
+RMDIR /S /Q "C:\Program Files\Java\jre6"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre6"
+
+ECHO Installing AdoptOpenJDK
+msiexec /i E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jdk_x64_windows_hotspot_8u212b03.msi /quiet /norestart
 
 
 DIR "C:\Program Files\AdoptOpenJDK" | FIND "j"
