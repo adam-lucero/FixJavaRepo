@@ -20,9 +20,9 @@ IF "%regFiles%"=="No" (GOTO :eof)
 
 :: Skip OR Upgrade and verify
 ECHO --- Verify New Java ---
-DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe"
+DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
-DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe"
+DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
 IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
