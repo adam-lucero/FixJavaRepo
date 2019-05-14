@@ -2,7 +2,6 @@
 setlocal ENABLEDELAYEDEXPANSION
 set programFiles=No
 set regFiles=No
-SET newProgramFiles=No
 
 :verify
 :: Verify Java is installed
@@ -50,7 +49,6 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
-::
 set x86GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
   'reg query "%x86GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
