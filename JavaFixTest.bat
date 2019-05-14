@@ -4,6 +4,7 @@ set programFiles=No
 set regFiles=No
 
 :verify
+ECHO --- Starting Verification ---
 :: Verify Java is installed
 DIR "C:\Program Files\Java" | FIND "jre"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
@@ -18,6 +19,7 @@ IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
 :: Skip OR Upgrade and verify
+ECHO --- Verify New Java ---
 DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe"
 IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
 DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe"
@@ -28,6 +30,7 @@ SET verifyUpgrade=Yes
 GOTO :verify
 
 :endgame
+ECHO --- Starting The Endgame ---
 :: Uninstall everything with Java, except JRE 8 Update 201
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
