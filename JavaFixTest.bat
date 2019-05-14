@@ -1,7 +1,34 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
+set programFiles=No
+set regFiles=No
+SET newProgramFiles=No
 
+:verify
+:: Verify Java is installed
+DIR "C:\Program Files\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
+DIR "C:\Program Files (x86)\Java" | FIND "jre"
+IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+:: If Java is not in program files AND registry, end the script
+IF "%programFiles%"=="No" (GOTO :eof)
+IF "%regFiles%"=="No" (GOTO :eof)
 
+:: Skip OR Upgrade and verify
+DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe"
+IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
+DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe"
+IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
+IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
+E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
+SET verifyUpgrade=Yes
+GOTO :verify
+
+:endgame
 :: Uninstall everything with Java, except JRE 8 Update 201
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
@@ -44,4 +71,14 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
+ECHO --- Removing Program Files ---
+RMDIR /S /Q "C:\Program Files\Java\jre1.8.0_1"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre1.8.0_1"
+RMDIR /S /Q "C:\Program Files\Java\jre1.8.0_0"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre1.8.0_0"
+RMDIR /S /Q "C:\Program Files\Java\jre7"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre7"
+RMDIR /S /Q "C:\Program Files\Java\jre6"
+RMDIR /S /Q "C:\Program Files (x86)\Java\jre6"
 
+:eof
