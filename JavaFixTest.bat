@@ -6,9 +6,9 @@ set regFiles=No
 :verify
 ECHO --- Starting Verification ---
 :: Verify Java is installed
-DIR "C:\Program Files\Java" | FIND "jre"
+DIR "C:\Program Files\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-DIR "C:\Program Files (x86)\Java" | FIND "jre"
+DIR "C:\Program Files (x86)\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
 Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
