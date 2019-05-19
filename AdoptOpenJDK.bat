@@ -3,8 +3,9 @@ setlocal ENABLEDELAYEDEXPANSION
 set programFiles=No
 set regFiles=No
 
-ECHO --- Starting Verification ---
+
 :: Verify Java is installed
+ECHO --- Starting Verification ---
 DIR "C:\Program Files\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
 DIR "C:\Program Files (x86)\Java" | FIND "j"
@@ -17,7 +18,7 @@ IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
 IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
-
+:: Remove all versions of commercial Java
 ECHO --- Removing commercial Java ---
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
@@ -47,11 +48,12 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
+:: Delete Program File remnants
 ECHO --- Removing Program Files ---
 RMDIR /S /Q "C:\Program Files\Java\"
 RMDIR /S /Q "C:\Program Files (x86)\Java\"
 
-
+:: Install OpenJDK
 DIR "C:\Program Files\AdoptOpenJDK" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 DIR "C:\Program Files (x86)\AdoptOpenJDK" | FIND "j"
