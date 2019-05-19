@@ -25,6 +25,7 @@ Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
 Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+::
 IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
@@ -44,7 +45,7 @@ ECHO --- Verifying Successful Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
 
-:: Uninstall everything Java, except JRE 8 Update 201 - x86 and x64
+:: Uninstall everything except JRE 8 Update 201 - x86 and x64
 :cleanup
 ECHO --- Starting The Cleanup ---
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
