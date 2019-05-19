@@ -2,8 +2,11 @@
 ::  OpenJDK Migration  ::
 :::::::::::::::::::::::::
 
-:: Author: Adam Lucero
-:: Prerequisites: UAC Disabled
+::  Author: @dam Lucer0
+
+:: Instructions
+:: 1. Make sure all devices have UAC Disabled (can be done with reg key)
+:: 2. Change the INSTALLATION PATH below!
 
 @echo off
 setlocal ENABLEDELAYEDEXPANSION

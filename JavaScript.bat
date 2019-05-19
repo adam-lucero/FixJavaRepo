@@ -2,17 +2,21 @@
 ::  JavaScript  ::
 ::::::::::::::::::
 
-:: Author: Adam Lucero
-:: Prerequisites: UAC Disabled
+::  Author: @dam Lucer0
+
+:: Instructions 
+:: 1. Make sure all devices have UAC Disabled (can be done with reg key)
+:: 2. Change the INSTALLATION PATH below!
+
 
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 set programFiles=No
 set regFiles=No
 
+:: Verify Java is installed
 :verify
 ECHO --- Starting Verification ---
-:: Verify Java is installed
 DIR "C:\Program Files\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
 DIR "C:\Program Files (x86)\Java" | FIND "j"
@@ -21,18 +25,20 @@ Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
 Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
-:: 
 IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
-:: Don't do anything unless Java 8 Update 201 is installed 
+:: Make sure Java 8 Update 201 is installed before continuing 
 ECHO --- Finding the latest version  ---
 DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
 DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
 IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
+
+:: CHANGE INSTALLATION PATH HERE !!!
 E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
+
 ECHO --- Upgrade Complete ---
 SET verifyUpgrade=Yes
 GOTO :verify
