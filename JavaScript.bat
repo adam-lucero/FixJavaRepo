@@ -31,21 +31,22 @@ IF "%regFiles%"=="No" (GOTO :eof)
 :: Make sure Java 8 Update 201 is installed before continuing 
 ECHO --- Finding the latest version  ---
 DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 1>nul
-IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
+IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
 DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 1>nul
-IF '%ERRORLEVEL%'=='0' (GOTO :endgame)
+IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
 IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
 :: CHANGE INSTALLATION PATH HERE !!!
 E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
-
+::
 ECHO --- Upgrade Complete ---
+ECHO --- Verifying Successful Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
 
 :: Uninstall everything Java, except JRE 8 Update 201 - x86 and x64
-:endgame
-ECHO --- Starting The Endgame ---
+:cleanup
+ECHO --- Starting The Cleanup ---
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
   'reg query "%x64GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
