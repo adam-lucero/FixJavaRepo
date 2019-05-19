@@ -8,11 +8,11 @@
 :: 1. Make sure all devices have UAC Disabled (can be done with reg key)
 :: 2. Change the INSTALLATION PATH below!
 
-
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 set programFiles=No
 set regFiles=No
+
 
 :: Verify Java is installed
 :verify
