@@ -1,3 +1,10 @@
+::::::::::::::::::
+::  JavaScript  ::
+::::::::::::::::::
+
+:: Author: Adam Lucero
+:: Prerequisites: UAC Disabled
+
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 set programFiles=No
