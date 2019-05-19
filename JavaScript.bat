@@ -46,8 +46,6 @@ for /f "tokens=2*" %%A in (
       IF NOT "!uninstallStr!"=="MsiExec.exe /X{26A24AE4-039D-4CA4-87B4-2F32180201F0}" (
         IF NOT "!uninstallStr!"=="MsiExec.exe /X{26A24AE4-039D-4CA4-87B4-2F64180201F0}" (
           !uninstallStr! /quiet /norestart
-        ) ELSE (
-          ECHO Not this one
         )
       )
     )
@@ -66,23 +64,27 @@ for /f "tokens=2*" %%A in (
       IF NOT "!uninstallStr!"=="MsiExec.exe /X{26A24AE4-039D-4CA4-87B4-2F32180201F0}" (
         IF NOT "!uninstallStr!"=="MsiExec.exe /X{26A24AE4-039D-4CA4-87B4-2F64180201F0}" (
           !uninstallStr! /quiet /norestart
-        ) ELSE (
-          ECHO Not this one
         )
       )
     )
   )
 )
 ECHO --- Removing Program Files ---
-RMDIR /S /Q "C:\Program Files\Java\jre1.8.0_1"
-RMDIR /S /Q "C:\Program Files (x86)\Java\jre1.8.0_1"
-RMDIR /S /Q "C:\Program Files\Java\jre1.8.0_0"
-RMDIR /S /Q "C:\Program Files (x86)\Java\jre1.8.0_0"
-RMDIR /S /Q "C:\Program Files\Java\jre7"
-RMDIR /S /Q "C:\Program Files (x86)\Java\jre7"
-RMDIR /S /Q "C:\Program Files\Java\jre6"
-RMDIR /S /Q "C:\Program Files (x86)\Java\jre6"
-RMDIR /S /Q "C:\Program Files\Java\jdk*"
-RMDIR /S /Q "C:\Program Files (x86)\Java\jdk*"
+FOR /D %%C IN (
+    "C:\Program Files\Java\*"
+) DO (
+    SET directory=%%C
+    IF NOT "!directory!"=="C:\Program Files\Java\jre1.8.0_201" (
+        RMDIR /S /Q "!directory!"
+    )
+)
+FOR /D %%C IN (
+    "C:\Program Files (x86)\Java\*"
+) DO (
+    SET directory=%%C
+    IF NOT "!directory!"=="C:\Program Files (x86)\Java\jre1.8.0_201" (
+        RMDIR /S /Q "!directory!"
+    )
+)
 
 :eof
