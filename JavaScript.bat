@@ -14,7 +14,7 @@ setlocal ENABLEDELAYEDEXPANSION
 
 :: CHANGE INSTALLATION PATH !!! 
 :: Ending \ Required ------------v
-SET installPath=\\DOMAIN\NETLOGON\
+SET installationPath=\\DOMAIN\NETLOGON\
 
 
 set programFiles=No
@@ -43,7 +43,7 @@ IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
 :: CHANGE INSTALLATION PATH BELOW !!!
 ECHO --- Upgrading ---
-%installPath% /s REMOVEOUTOFDATEJRES=1
+%installationPath% /s REMOVEOUTOFDATEJRES=1
 ECHO --- Verifying Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
