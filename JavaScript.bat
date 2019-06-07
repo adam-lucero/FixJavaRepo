@@ -13,8 +13,7 @@ setlocal ENABLEDELAYEDEXPANSION
 :: 3. Disable UAC before running script (can be done via Registry)
 
 :: CHANGE INSTALLATION PATH !!! 
-:: Ending \ Required ------------v
-SET installationPath=\\DOMAIN\NETLOGON\
+SET installationPath=\\Domain\NETLOGON\Java.exe
 
 
 set programFiles=No
