@@ -1,20 +1,24 @@
+@echo off
+setlocal ENABLEDELAYEDEXPANSION
+
 ::::::::::::::::::
 ::  JavaScript  ::
 ::::::::::::::::::
 
 ::  Author: @dam Lucer0
 
-:: IMPORTANT
+
 :: 1. Only works with Windows
 :: 2. Doesn't run unless Java is detected in Program Files and the Registry 
 :: 3. Disable UAC before running script (can be done via Registry)
-:: 4. Change the INSTALLATION PATH below!
 
-@echo off
-setlocal ENABLEDELAYEDEXPANSION
+:: CHANGE INSTALLATION PATH !!! 
+:: Ending \ Required ------------v
+SET installPath=\\DOMAIN\NETLOGON\
+
+
 set programFiles=No
 set regFiles=No
-
 :: Verify Java is installed
 :verify
 ECHO --- Verification ---
@@ -39,7 +43,7 @@ IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
 :: CHANGE INSTALLATION PATH BELOW !!!
 ECHO --- Upgrading ---
-E:\Downloads\Java\JRE\jre-8u201-windows-i586.exe /s REMOVEOUTOFDATEJRES=1
+%installPath% /s REMOVEOUTOFDATEJRES=1
 ECHO --- Verifying Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
