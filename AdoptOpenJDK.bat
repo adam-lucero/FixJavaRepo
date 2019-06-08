@@ -1,20 +1,20 @@
+@echo off
+setlocal ENABLEDELAYEDEXPANSION
+
 :::::::::::::::::::::::::
 ::  OpenJDK Migration  ::
 :::::::::::::::::::::::::
 
 ::  Author: @dam Lucer0
 
-:: Instructions
-:: 1. Make sure all devices have UAC Disabled (can be done with reg key)
+:: Informational ::
+:: 1. Make sure all target devices have UAC Disabled before running (can be done with reg key)
 :: 2. Change the INSTALLATION PATH below!
-
-@echo off
-setlocal ENABLEDELAYEDEXPANSION
-set programFiles=No
-set regFiles=No
 
 
 :: Verify Java is installed
+set programFiles=No
+set regFiles=No
 ECHO --- Starting Verification ---
 DIR "C:\Program Files\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)

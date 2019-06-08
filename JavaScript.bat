@@ -7,19 +7,21 @@ setlocal ENABLEDELAYEDEXPANSION
 
 ::  Author: @dam Lucer0
 
+:: Informational ::
+:: 1. Make sure all target devices have UAC Disabled before running (can be done with reg key)
+:: 2. Doesn't run unless Java is detected in Program Files and Registry 
 
-:: 1. Only works with Windows
-:: 2. Doesn't run unless Java is detected in Program Files and the Registry 
-:: 3. Disable UAC before running script (can be done via Registry)
 
 :: CHANGE INSTALLATION PATH !!! 
 SET installationPath=\\Domain\NETLOGON\Java.exe
 
+:: Silent and remove old installations (DEFAULT)
+SET switches=/s REMOVEOUTOFDATEJRES=1
 
-set programFiles=No
-set regFiles=No
 :: Verify Java is installed
 :verify
+set programFiles=No
+set regFiles=No
 ECHO --- Verification ---
 DIR "C:\Program Files\Java" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
@@ -42,7 +44,7 @@ IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
 :: CHANGE INSTALLATION PATH BELOW !!!
 ECHO --- Upgrading ---
-%installationPath% /s REMOVEOUTOFDATEJRES=1
+%installationPath% %switches%
 ECHO --- Verifying Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
