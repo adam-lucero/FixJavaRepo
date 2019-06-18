@@ -1,49 +1,48 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
-::::::::::::::::::
-::  JavaScript  ::
-::::::::::::::::::
+::::::::::::::::::::::::::::
+::  OracleJavaRemediation ::
+::::::::::::::::::::::::::::
 
 ::  Author: @dam Lucer0
 
-:: Informational ::
-:: 1. Make sure all target devices have UAC Disabled before running (can be done with reg key)
-:: 2. Doesn't run unless Java is detected in Program Files and Registry 
-
+:: Important ::
+:: All target devices must have UAC Disabled before running (registry key)
+:: If Java is installed, script will silently upgrade to the latest version and remove all old versions (JDK and JRE) 
 
 :: CHANGE INSTALLATION PATH !!! 
-SET installationPath=\\Domain\NETLOGON\Java.exe
+SET installationPath=\\Domain\NETLOGON\JRE8U201.exe
 
 :: Silent and remove old installations (DEFAULT)
 SET switches=/s REMOVEOUTOFDATEJRES=1
 
-:: Verify Java is installed
 :verify
+ECHO --- Finding Java Installations ---
 set programFiles=No
 set regFiles=No
-ECHO --- Verification ---
-DIR "C:\Program Files\Java" | FIND "j"
+DIR "C:\Program Files\Java" 2>nul | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-DIR "C:\Program Files (x86)\Java" | FIND "j"
+DIR "C:\Program Files (x86)\Java" 2>nul | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
 ::
 IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
-:: Make sure Java 8 Update 201 is installed before continuing
+
+ECHO --- Verifying Java Version ---
 DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
 DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 1>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
 IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
-:: CHANGE INSTALLATION PATH BELOW !!!
-ECHO --- Upgrading ---
+
+ECHO --- Upgrading Java ---
 %installationPath% %switches%
 ECHO --- Verifying Upgrade ---
 SET verifyUpgrade=Yes
@@ -51,7 +50,7 @@ GOTO :verify
 
 :: Uninstall everything except JRE 8 Update 201 - x86 and x64
 :cleanup
-ECHO --- Cleanup ---
+ECHO --- Removing Old Java Versions ---
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
   'reg query "%x64GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
@@ -88,7 +87,7 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
-ECHO --- Removing Program Files ---
+ECHO --- Removing Old Program Files ---
 FOR /D %%C IN (
     "C:\Program Files\Java\*"
 ) DO (

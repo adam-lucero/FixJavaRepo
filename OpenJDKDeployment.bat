@@ -2,34 +2,36 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 :::::::::::::::::::::::::
-::  OpenJDK Migration  ::
+::  OpenJDKDeployment  ::
 :::::::::::::::::::::::::
 
 ::  Author: @dam Lucer0
 
-:: Informational ::
-:: 1. Make sure all target devices have UAC Disabled before running (can be done with reg key)
-:: 2. Change the INSTALLATION PATH below!
+:: Important ::
+:: All target devices must have UAC Disabled before running (registry key)
+:: If Java is installed, script will silently remove all versions of Oracle Java (JDK & JRE) and then install AdoptOpenJDK
+
+:: CHANGE INSTALLATION PATH !!! 
+SET installationPath=\\Domain\NETLOGON\AdoptJDK.exe
 
 
-:: Verify Java is installed
+ECHO --- Finding Java Installations ---
 set programFiles=No
 set regFiles=No
-ECHO --- Starting Verification ---
-DIR "C:\Program Files\Java" | FIND "j"
+DIR "C:\Program Files\Java" 2>nul | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-DIR "C:\Program Files (x86)\Java" | FIND "j"
+DIR "C:\Program Files (x86)\Java" 2>nul | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName | find "Java"
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
 IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
-:: 
+::
 IF "%programFiles%"=="No" (GOTO :eof)
 IF "%regFiles%"=="No" (GOTO :eof)
 
-:: Remove all versions of commercial Java
-ECHO --- Removing commercial Java ---
+
+ECHO --- Removing Oracle Java Installations ---
 set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 for /f "tokens=2*" %%A in (
   'reg query "%x64GUID%" /V /F DisplayName /S /E 2^>nul ^| findstr "Java"'
@@ -58,12 +60,14 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
-:: Delete Program File remnants
-ECHO --- Removing Program Files ---
+
+
+ECHO --- Removing Old Program Files ---
 RMDIR /S /Q "C:\Program Files\Java\"
 RMDIR /S /Q "C:\Program Files (x86)\Java\"
 
-:: Install OpenJDK
+
+ECHO --- Installing OpenJDK ---
 DIR "C:\Program Files\AdoptOpenJDK" | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 DIR "C:\Program Files (x86)\AdoptOpenJDK" | FIND "j"
@@ -71,7 +75,6 @@ IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 
 IF "%adoptjdkFiles%"=="Yes" (
   GOTO :eof
-) ELSE (msiexec /i E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jdk_x64_windows_hotspot_8u212b03.msi /quiet /norestart)
-
+) ELSE (msiexec /i %installationPath% /quiet /norestart)
 
 :eof
