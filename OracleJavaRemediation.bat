@@ -35,9 +35,9 @@ IF "%regFiles%"=="No" (GOTO :eof)
 
 
 ECHO --- Verifying Java Version ---
-DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 1>nul
+DIR "C:\Program Files\Java\jre1.8.0_201\bin\java.exe" 2>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
-DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 1>nul
+DIR "C:\Program Files (x86)\Java\jre1.8.0_201\bin\java.exe" 2>nul
 IF '%ERRORLEVEL%'=='0' (GOTO :cleanup)
 IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
