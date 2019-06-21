@@ -24,15 +24,15 @@ ECHO PATH Environment Variables: >> %installedJava%
 SET PATH >> %installedJava%
 
 ECHO --- Java Registry Keys  --- >> %installedJava%
-set regFiles=No
-Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java" >> %installedJava%
-IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
-Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java" >> %installedJava%
-IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+SET regFiles=No
+REG Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
+IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
+REG Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
+IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
 IF "%regFiles%"=="No" (GOTO :eof)
 
 ECHO --- Java Program Files --- >> %installedJava%
-set programFiles=No
+SET programFiles=No
 FOR /D %%C IN ("C:\Program Files\Java\*") DO (
     SET directory=%%C
     DIR "!directory!" >> %installedJava%
@@ -41,22 +41,22 @@ FOR /D %%C IN ("C:\Program Files (x86)\Java\*") DO (
     SET directory=%%C
     DIR "!directory!" >> %installedJava%
 )
-Find "C:\Program Files\Java\j" %installedJava% >> %installedJava%
+FIND "C:\Program Files\Java\j" %installedJava% >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-Find "C:\Program Files (x86)\Java\j" %installedJava% >> %installedJava%
+FIND "C:\Program Files (x86)\Java\j" %installedJava% >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes )
 IF "%programFiles%"=="No" (GOTO :eof)
 ECHO --- Java Detected ---
 
 
 ECHO --- Uninstalling ---
-set x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-for /f "tokens=2*" %%A in (
-  'reg query "%x64GUID%" /V /F DisplayName /S /E 2^>nul ^| find "Java"'
+SET x64GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+FOR /f "tokens=2*" %%A in (
+  'REG query "%x64GUID%" /V /F DisplayName /S /E 2^>nul ^| FIND "Java"'
 ) do (
-  for /f "delims=" %%I in ('reg query "%x64GUID%" /s /f "%%B" 2^>nul ^| findstr "HKEY_LOCAL_MACHINE"') do (
-    for /f "tokens=2*" %%M in (
-      'reg query "%%I" /v "UninstallString" 2^>nul ^|findstr "UninstallString" ^|findstr "MsiExec.exe"'
+  FOR /f "delims=" %%I in ('REG query "%x64GUID%" /s /f "%%B" 2^>nul ^| FINDSTR "HKEY_LOCAL_MACHINE"') do (
+    FOR /f "tokens=2*" %%M in (
+      'REG query "%%I" /v "UninstallString" 2^>nul ^|FINDSTR "UninstallString" ^|FINDSTR "MsiExec.exe"'
     ) do (
       SET uninstallStr=%%N
       SET uninstallStr=!uninstallStr:/I=/X!
@@ -64,13 +64,13 @@ for /f "tokens=2*" %%A in (
     )
   )
 )
-set x86GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
-for /f "tokens=2*" %%A in (
-  'reg query "%x86GUID%" /V /F DisplayName /S /E 2^>nul ^| find "Java"'
+SET x86GUID=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
+FOR /f "tokens=2*" %%A in (
+  'REG query "%x86GUID%" /V /F DisplayName /S /E 2^>nul ^| FIND "Java"'
 ) do (
-  for /f "delims=" %%I in ('reg query "%x86GUID%" /s /f "%%B" 2^>nul ^| findstr "HKEY_LOCAL_MACHINE"') do (
-    for /f "tokens=2*" %%M in (
-      'reg query "%%I" /v "UninstallString" 2^>nul ^|findstr "UninstallString" ^|findstr "MsiExec.exe"'
+  FOR /f "delims=" %%I in ('REG query "%x86GUID%" /s /f "%%B" 2^>nul ^| FINDSTR "HKEY_LOCAL_MACHINE"') do (
+    FOR /f "tokens=2*" %%M in (
+      'REG query "%%I" /v "UninstallString" 2^>nul ^|FINDSTR "UninstallString" ^|FINDSTR "MsiExec.exe"'
     ) do (
       SET uninstallStr=%%N
       SET uninstallStr=!uninstallStr:/I=/X!
