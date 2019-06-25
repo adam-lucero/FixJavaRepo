@@ -14,45 +14,24 @@ setlocal ENABLEDELAYEDEXPANSION
 :: CHANGE INSTALLATION PATH !!! 
 SET installationPath=\\Domain\NETLOGON\JRE8U201.exe
 
-
-SET installedJava=C:\Windows\Temp\InstalledJava.txt
-TIME /T >> %installedJava%
-DATE /T >> %installedJava% 
-ECHO --- Before Changes --- >> %installedJava%
-
+:: Silent and remove old installations (DEFAULT)
+SET switches=/s REMOVEOUTOFDATEJRES=1
 
 :verify
-ECHO --- Registry Keys --- >> %installedJava%
-SET regFiles=No
-REG Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
-IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
-REG Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
-IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
-IF "%regFiles%"=="No" (
-  ECHO --- ENDING: No Registry Key Matches --- >> %installedJava%
-  GOTO :eof
-)
-
-
-ECHO --- Program Files --- >> %installedJava%
-SET programFiles=No
-FOR /D %%C IN ("C:\Program Files\Java\*") DO (
-    SET directory=%%C
-    DIR "!directory!" >> %installedJava%
-)
-FOR /D %%C IN ("C:\Program Files (x86)\Java\*") DO (
-    SET directory=%%C
-    DIR "!directory!" >> %installedJava%
-)
-FIND "C:\Program Files\Java\j" %installedJava% >> %installedJava%
+ECHO --- Finding Java Installations ---
+set programFiles=No
+set regFiles=No
+DIR "C:\Program Files\Java" 2>nul | FIND "j"
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
-FIND "C:\Program Files (x86)\Java\j" %installedJava% >> %installedJava%
-IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes )
-IF "%programFiles%"=="No" (
-  ECHO --- ENDING: No Program File Matches --- >> %installedJava%
-  GOTO :eof
-)
-
+DIR "C:\Program Files (x86)\Java" 2>nul | FIND "j"
+IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
+Reg Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
+IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+Reg Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | find "Java"
+IF '%ERRORLEVEL%'=='0' (set regFiles=Yes)
+::
+IF "%programFiles%"=="No" (GOTO :eof)
+IF "%regFiles%"=="No" (GOTO :eof)
 
 
 ECHO --- Verifying Java Version ---
@@ -64,7 +43,7 @@ IF "%verifyUpgrade%"=="Yes" (GOTO :eof)
 
 
 ECHO --- Upgrading Java ---
-%installationPath% /s REMOVEOUTOFDATEJRES=1
+%installationPath% %switches%
 ECHO --- Verifying Upgrade ---
 SET verifyUpgrade=Yes
 GOTO :verify
