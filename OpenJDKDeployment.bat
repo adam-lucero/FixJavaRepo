@@ -16,7 +16,7 @@ setlocal ENABLEDELAYEDEXPANSION
 SET installationPath=E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jre_x86-32_windows_hotspot_8u212b04.msi
 
 
-SET installedJava=C:\Windows\Temp\InstalledJava.txt
+SET installedJava=C:\Windows\Temp\OpenJDKMigration.txt
 TIME /T >> %installedJava%
 DATE /T >> %installedJava% 
 ECHO --- Before Changes --- >> %installedJava%
