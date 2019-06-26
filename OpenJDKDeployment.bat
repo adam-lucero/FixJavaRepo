@@ -1,5 +1,6 @@
-@echo off
-setlocal ENABLEDELAYEDEXPANSION
+@ECHO off
+SETLOCAL ENABLEDELAYEDEXPANSION
+SET loggingVar=###################
 
 :::::::::::::::::::::::::
 ::  OpenJDKDeployment  ::
@@ -17,25 +18,27 @@ SET installationPath=E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jre_x86-32_windows
 
 
 SET installedJava=C:\Windows\Temp\OpenJDKMigration.txt
+DEL /F /Q %installedJava% 2>nul
+ECHO %loggingVar% START LOG %loggingVar% >> %installedJava%
 TIME /T >> %installedJava%
 DATE /T >> %installedJava% 
-ECHO --- Before Changes --- >> %installedJava%
+ECHO %loggingVar% Before Changes %loggingVar% >> %installedJava%
 SET PATH >> %installedJava%
 
 
-ECHO --- Registry Keys --- >> %installedJava%
+ECHO %loggingVar% Registry Keys %loggingVar% >> %installedJava%
 SET regFiles=No
 REG Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
 REG Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET regFiles=Yes)
 IF "%regFiles%"=="No" (
-  ECHO --- ENDING: No Registry Key Matches --- >> %installedJava%
+  ECHO %loggingVar% ENDING: No Registry Key Matches %loggingVar% >> %installedJava%
   GOTO :eof
 )
 
 
-ECHO --- Program Files --- >> %installedJava%
+ECHO %loggingVar% Program Files %loggingVar% >> %installedJava%
 SET programFiles=No
 FOR /D %%C IN ("C:\Program Files\Java\*") DO (
     SET directory=%%C
@@ -50,7 +53,7 @@ IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes)
 FIND "C:\Program Files (x86)\Java\j" %installedJava% >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET programFiles=Yes )
 IF "%programFiles%"=="No" (
-  ECHO --- ENDING: No Program File Matches --- >> %installedJava%
+  ECHO %loggingVar% ENDING: No Program File Matches %loggingVar% >> %installedJava%
   GOTO :eof
 )
 
@@ -88,7 +91,7 @@ RMDIR /S /Q "C:\Program Files\Java\" 2>nul
 RMDIR /S /Q "C:\Program Files (x86)\Java\" 2>nul
 
 
-ECHO --- After Changes --- >> %installedJava% 
+ECHO %loggingVar% After Changes %loggingVar% >> %installedJava% 
 SET PATH >> %installedJava%
 REG Query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
 REG Query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2>nul | FIND "Java" >> %installedJava%
@@ -103,7 +106,7 @@ FOR /D %%C IN ("C:\Program Files (x86)\Java\*") DO (
 
 
 :verifyUpgrade
-ECHO --- AdoptOpenJDK Installations --- >> %installedJava%
+ECHO %loggingVar% AdoptOpenJDK Installations %loggingVar% >> %installedJava%
 DIR "C:\Program Files\AdoptOpenJDK\" 2>nul | FIND /I "j" >> %installedJava%
 IF '%ERRORLEVEL%'=='0' (SET adoptjdkFiles=Yes)
 DIR "C:\Program Files (x86)\AdoptOpenJDK\" 2>nul | FIND /I "j" >> %installedJava%
