@@ -8,8 +8,8 @@ SET loggingVar=###################
 
 ::  Author: @dam Lucer0
 
-:: Important ::
-:: All target devices must have UAC Disabled before running (registry key)
+
+:: MUST disable UAC on target devices before running script (registry key available)
 :: If Java is installed, script will silently upgrade to the latest version and remove all old versions (JDK and JRE) 
 
 :: Where is the installation media? 
@@ -27,7 +27,6 @@ SET installDirectorySixFour=C:\Program Files\Java\jre1.8.0_201
 
 SET installedJava=C:\Windows\Temp\InstalledJava.txt
 DEL /F /Q %installedJava% 2>nul
-ECHO %loggingVar% START LOG %loggingVar% >> %installedJava%
 TIME /T >> %installedJava%
 DATE /T >> %installedJava% 
 ECHO %loggingVar% Before Changes %loggingVar% >> %installedJava%

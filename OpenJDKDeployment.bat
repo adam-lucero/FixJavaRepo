@@ -8,8 +8,8 @@ SET loggingVar=###################
 
 ::  Author: @dam Lucer0
 
-:: Important ::
-:: All target devices must have UAC Disabled before running (registry key)
+
+:: MUST disable UAC on target devices before running script (registry key available)
 :: If Java is installed, script will silently remove all versions of Oracle Java (JDK & JRE) and then install AdoptOpenJDK
 :: AdoptOpenJDK adds to PATH variable during installation
 
@@ -19,7 +19,6 @@ SET installationPath=E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jre_x86-32_windows
 
 SET installedJava=C:\Windows\Temp\OpenJDKMigration.txt
 DEL /F /Q %installedJava% 2>nul
-ECHO %loggingVar% START LOG %loggingVar% >> %installedJava%
 TIME /T >> %installedJava%
 DATE /T >> %installedJava% 
 ECHO %loggingVar% Before Changes %loggingVar% >> %installedJava%
