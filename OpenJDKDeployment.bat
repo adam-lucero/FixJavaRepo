@@ -13,7 +13,7 @@ SET loggingVar=###################
 :: If Java is installed, script will silently remove all versions of Oracle Java (JDK & JRE) and then install AdoptOpenJDK
 :: AdoptOpenJDK adds to PATH variable during installation
 
-:: CHANGE INSTALLATION PATH !!! 
+:: CHANGE INSTALLATION PATH HERE !!! 
 SET installationPath=E:\Downloads\Java\AdoptOpenJDK\OpenJDK8U-jre_x86-32_windows_hotspot_8u212b04.msi
 
 
